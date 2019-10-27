@@ -68,7 +68,7 @@ def download(file_url, path, filename):  # 下载函数
         response.close()
         download_exception.append((file_url, path, filename))
         print(
-            f'\r[Error] Download request for *{filename}* has failed.\tStatus Code => {response.status_code}')
+            f'\r[Error] Download request for *{filename}* has failed.\tstatus_code => {response.status_code}')
         return
 
     try:
@@ -77,7 +77,7 @@ def download(file_url, path, filename):  # 下载函数
         response.close()
         download_exception.append((file_url, path, filename))
         print(
-            f'\r[Error] Download request for *{filename}* has failed.\tMissing / invalid Content Length.')
+            f'\r[Error] Download request for *{filename}* has failed.\tMissing or invalid content-length.')
         return
 
     print('[File Size] %0.2f MB' % (content_size / 1024 ** 2))
