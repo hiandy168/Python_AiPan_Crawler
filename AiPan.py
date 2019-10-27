@@ -1,22 +1,46 @@
 ﻿#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+'''
+MIT License
+
+Copyright (c) 2019 Maemo8086, MikoSec
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
 import os
 import random
+import requests
 import sys
 import time
-
-import requests
 from bs4 import BeautifulSoup
 
 
 def download(file_url, path, filename):  # 下载函数
     global download_exception
-    global delay
 
     print()
-    print(f'\r[Downloading] Path => {path}\tFileName => {filename}')
+    print(f'\r[Downloading] Path => {path}\tFile Name => {filename}')
     sys.stdout.flush()
+
+    delay = False
 
     if delay:
         wait = round(random.uniform(0, 5), 2)
@@ -42,7 +66,7 @@ def download(file_url, path, filename):  # 下载函数
     if response.status_code != 200:
         download_exception.append((file_url, path, filename))
         print(
-            f'\r[Error] Download request for *{filename}* has failed.\tstatus_code => {response.status_code}')
+            f'\r[Error] Download request for *{filename}* has failed.\tStatus Code => {response.status_code}')
         return
 
     chunk_size = 512
@@ -65,7 +89,7 @@ def download(file_url, path, filename):  # 下载函数
                 size += len(data)
                 print(
                     '\r[Downloading] %s>%.2f%%' % (
-                        '=' * int(size * 50 / content_size), float(size / content_size * 100)), end = '')
+                        '=' * int(size * 50 / content_size), float(size / content_size * 100)), end='')
     except:
         download_exception.append((file_url, path, filename))
         if os.path.exists(full_path):
@@ -112,14 +136,28 @@ def recursive_fetch(soup, part_url):
 
 def main():
     global url
-    global directory
-    global user_agent
     global download_exception
 
+    display = [
+        'Python 爱盘抓盘工具',
+        '',
+        '作者： Maemo8086，MikoSec',
+        '源码： https://github.com/Maemo8086/Python_AiPan_Crawler',
+        '',
+        '一款基于Python 的吾爱破解论坛爱盘下载工具',
+        '本工具使用Python3，requests库，(BeautifulSoup4) bs4库以及lxml库，',
+        '建议使用前先修改User Agent 一栏。'
+    ]
+
+    for row in display:
+        print(row.center(80))
+
+    directory = 'AiPan'
     if not os.path.exists(directory):
         os.mkdir(directory)
     os.chdir(directory)
-    headers = {'User-Agent': user_agent}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'}
 
     try:
         req = requests.get(url, headers=headers, timeout=30)
@@ -135,6 +173,9 @@ def main():
         print()
         print(f'\r[Info] Retrying {len(download_exception)} failed downloads...')
 
+        for file_url, _ in download_exception:
+            print(f'\r\t File URL => {file_url}')
+
         wait = round(random.uniform(10, 30), 2)
         print()
         print(f'\r[Info] Waiting {wait} seconds...')
@@ -148,9 +189,6 @@ def main():
 
 
 url = 'https://down.52pojie.cn/'  # 爱盘 URL
-directory = 'AiPan'
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'
-delay = True
 
 download_exception = list()
 main()
