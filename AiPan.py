@@ -68,7 +68,8 @@ def download(file_url, path, filename):  # 下载函数
                         '=' * int(size * 50 / content_size), float(size / content_size * 100)), end = '')
     except:
         download_exception.append((file_url, path, filename))
-        os.remove(full_path)
+        if os.path.exists(full_path):
+            os.remove(full_path)
         print(f'\r[Error] Download *{file_url}* has failed.')
         return
 
