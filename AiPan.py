@@ -105,6 +105,7 @@ def download(file_url, path, filename):  # 下载函数
 
 def recursive_fetch(soup, part_url):
     global url
+    global headers
 
     for i in soup.find_all('td', class_='link')[1:]:  # 获取文件或目录
         if i.text[-1] != '/':
@@ -126,7 +127,7 @@ def recursive_fetch(soup, part_url):
 
                 execute = False
                 try:
-                    with requests.get(dir_url, timeout=30) as req:
+                    with requests.get(dir_url, headers=headers, timeout=30) as req:
                         req.encoding = req.apparent_encoding
                         soup1 = BeautifulSoup(req.text, 'lxml')
                 except:
@@ -138,6 +139,7 @@ def recursive_fetch(soup, part_url):
 
 def main():
     global url
+    global headers
     global download_exception
 
     print(
@@ -157,9 +159,6 @@ def main():
     if not os.path.exists(directory):
         os.mkdir(directory)
     os.chdir(directory)
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'}
 
     try:
         with requests.get(url, headers=headers, timeout=30) as req:
@@ -190,6 +189,8 @@ def main():
 
 
 url = 'https://down.52pojie.cn/'  # 爱盘 URL
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'}
 
 download_exception = list()
 main()
