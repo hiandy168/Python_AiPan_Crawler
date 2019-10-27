@@ -31,6 +31,7 @@ import requests
 import sys
 import time
 from bs4 import BeautifulSoup
+from collections import deque
 
 
 def download(file_url, path, filename):  # 下载函数
@@ -192,5 +193,5 @@ url = 'https://down.52pojie.cn/'  # 爱盘 URL
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'}
 
-download_exception = list()
+download_exception = deque()
 main()
