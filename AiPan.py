@@ -80,6 +80,13 @@ def download(file_url, path, filename):  # 下载函数
             f'\r[Error] Download request for *{filename}* has failed.\tMissing or invalid content-length.')
         return
 
+    if content_size < 0:
+        response.close()
+        download_exception.append((file_url, path, filename))
+        print(
+            f'\r[Error] Download request for *{filename}* has failed.\tInvalid content-length range.')
+        return
+
     print('[File Size] %0.2f MB' % (content_size / 1024 ** 2))
     sys.stdout.flush()
 
