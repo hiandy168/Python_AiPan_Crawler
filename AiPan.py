@@ -41,7 +41,6 @@ def download(file_url, path, filename):  # 下载函数
     sys.stdout.flush()
 
     delay = False
-
     if delay:
         wait = round(random.uniform(0, 5), 2)
         print(f'\r[Info] Waiting {wait} seconds...')
@@ -71,7 +70,6 @@ def download(file_url, path, filename):  # 下载函数
             f'\r[Error] Download request for *{filename}* has failed.\tStatus Code => {response.status_code}')
         return
 
-    chunk_size = 512
     content_size = int(response.headers['content-length'])
     print('[File Size] %0.2f MB' % (content_size / 1024 ** 2))
     sys.stdout.flush()
@@ -84,6 +82,7 @@ def download(file_url, path, filename):  # 下载函数
         else:
             print('[Warning] Overwriting existing copy.')
 
+    chunk_size = 512
     size = 0
     try:
         with open(full_path, 'wb') as f:
@@ -142,24 +141,24 @@ def main():
     global url
     global download_exception
 
-    display = [
-        'Python 爱盘抓盘工具',
-        '',
-        '作者： Maemo8086，MikoSec',
-        '源码： https://github.com/Maemo8086/Python_AiPan_Crawler',
-        '',
-        '一款基于Python 的吾爱破解论坛爱盘下载工具',
-        '本工具使用Python3，requests库，(BeautifulSoup4) bs4库以及lxml库，',
-        '建议使用前先修改User Agent 一栏。'
-    ]
-
-    for row in display:
-        print(row.center(80))
+    print(
+        '''
+        Python 爱盘爬虫工具
+        
+        作者： Maemo8086，MikoSec
+        源码： https://github.com/Maemo8086/Python_AiPan_Crawler
+        
+        一款基于Python的吾爱破解论坛爱盘下载工具
+        本工具使用requests库跟bs4库
+        建议使用前先修改User Agent
+        '''
+    )
 
     directory = 'AiPan'
     if not os.path.exists(directory):
         os.mkdir(directory)
     os.chdir(directory)
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'}
 
@@ -176,7 +175,6 @@ def main():
     while download_exception:
         print()
         print(f'\r[Info] Retrying {len(download_exception)} failed downloads...')
-
         for file_url, _ in download_exception:
             print(f'\r\t File URL => {file_url}')
 
