@@ -81,10 +81,10 @@ def download(file_url, path, filename):  # 下载函数
         else:
             print('[Warning] Overwriting existing copy.')
 
-    chunk_size = 512
+    chunk_size = 1024
     size = 0
     try:
-        with open(full_path, 'wb') as f:
+        with open(full_path, 'wb', buffering=1) as f:
             for data in response.iter_content(chunk_size):
                 f.write(data)
                 size += len(data)
