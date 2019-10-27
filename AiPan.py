@@ -36,13 +36,13 @@ def download(file_url, path, filename):  # 下载函数
         response = requests.get(file_url, stream=True, timeout=30)
     except:
         download_exception.append((file_url, path, filename))
-        print(f'\r[Error] Download request for *{file_url}* has failed.')
+        print(f'\r[Error] Download request for *{filename}* has failed.')
         return
 
     if response.status_code != 200:
         download_exception.append((file_url, path, filename))
         print(
-            f'\r[Error] Download request for *{file_url}* has failed => {file_url}\tstatus_code => {response.status_code}')
+            f'\r[Error] Download request for *{filename}* has failed.\tstatus_code => {response.status_code}')
         return
 
     chunk_size = 128
@@ -70,7 +70,7 @@ def download(file_url, path, filename):  # 下载函数
         download_exception.append((file_url, path, filename))
         if os.path.exists(full_path):
             os.remove(full_path)
-        print(f'\r[Error] Download *{file_url}* has failed.')
+        print(f'\r[Error] Download *{filename}* has failed.')
         return
 
     end = time.time()  # 结束时间
