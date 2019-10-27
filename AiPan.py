@@ -35,6 +35,7 @@ from collections import deque
 
 
 def download(file_url, path, filename):  # 下载函数
+    global headers
     global download_exception
 
     print()
@@ -57,7 +58,7 @@ def download(file_url, path, filename):  # 下载函数
     full_path = path + filename
 
     try:
-        response = requests.get(file_url, stream=True, timeout=30)
+        response = requests.get(file_url, headers=headers, stream=True, timeout=30)
     except:
         download_exception.append((file_url, path, filename))
         print(f'\r[Error] Download request for *{filename}* has failed.')
@@ -70,7 +71,15 @@ def download(file_url, path, filename):  # 下载函数
             f'\r[Error] Download request for *{filename}* has failed.\tStatus Code => {response.status_code}')
         return
 
-    content_size = int(response.headers['content-length'])
+    try:
+        content_size = int(response.headers['content-length'])
+    except:
+        response.close()
+        download_exception.append((file_url, path, filename))
+        print(
+            f'\r[Error] Download request for *{filename}* has failed.\tMissing / invalid Content Length.')
+        return
+
     print('[File Size] %0.2f MB' % (content_size / 1024 ** 2))
     sys.stdout.flush()
 
@@ -117,7 +126,7 @@ def recursive_fetch(soup, part_url):
         else:
             dir_url = part_url + i.text
             print()
-            print(f'\r[Info] Searching under {dir_url}.')
+            print(f'\r[Info] Searching under {dir_url}')
 
             execute = True
             while execute:
