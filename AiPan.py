@@ -96,6 +96,8 @@ def download(file_url, path, filename):  # 下载函数
             os.remove(full_path)
         print(f'\r[Error] Download *{filename}* has failed.')
         return
+    finally:
+        response.close()
 
     end = time.time()  # 结束时间
     print('\rUsing Time: %.2fs' % (end - start))
@@ -124,9 +126,9 @@ def recursive_fetch(soup, part_url):
 
                 execute = False
                 try:
-                    req = requests.get(dir_url, timeout=30)
-                    req.encoding = req.apparent_encoding
-                    soup1 = BeautifulSoup(req.text, 'lxml')
+                    with requests.get(dir_url, timeout=30) as req:
+                        req.encoding = req.apparent_encoding
+                        soup1 = BeautifulSoup(req.text, 'lxml')
                 except:
                     execute = True
                     print(f'\r[Error] URL request *{dir_url}* has failed, retrying...')
@@ -160,9 +162,9 @@ def main():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'}
 
     try:
-        req = requests.get(url, headers=headers, timeout=30)
-        req.encoding = req.apparent_encoding
-        soup = BeautifulSoup(req.text, 'lxml')
+        with requests.get(url, headers=headers, timeout=30) as req:
+            req.encoding = req.apparent_encoding
+            soup = BeautifulSoup(req.text, 'lxml')
     except:
         print(f'\r[Error] URL request *{url}* has failed.')
         return
