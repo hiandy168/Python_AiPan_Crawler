@@ -98,9 +98,8 @@ def download(file_url, path, filename):  # 下载函数
         return
     finally:
         response.close()
-
-    end = time.time()  # 结束时间
-    print('\rUsing Time: %.2fs' % (end - start))
+        end = time.time()  # 结束时间
+        print('\rTime elapsed: %.2fs' % (end - start))
 
 
 def recursive_fetch(soup, part_url):
