@@ -58,7 +58,6 @@ def download(file_url, path, filename):  # 下载函数
     try:
         response = requests.get(file_url, stream=True, timeout=30)
     except:
-        response.close()
         download_exception.append((file_url, path, filename))
         print(f'\r[Error] Download request for *{filename}* has failed.')
         return
