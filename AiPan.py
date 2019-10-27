@@ -45,7 +45,7 @@ def download(file_url, path, filename):  # 下载函数
             f'\r[Error] Download request for *{filename}* has failed.\tstatus_code => {response.status_code}')
         return
 
-    chunk_size = 128
+    chunk_size = 512
     content_size = int(response.headers['content-length'])
     print('[File Size] %0.2f MB' % (content_size / 1024 ** 2))
     sys.stdout.flush()
@@ -150,7 +150,7 @@ def main():
 url = 'https://down.52pojie.cn/'  # 爱盘 URL
 directory = 'AiPan'
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77me/77.0.3865.120 Safari/537.36'
-delay = False
+delay = True
 
 download_exception = list()
 main()
