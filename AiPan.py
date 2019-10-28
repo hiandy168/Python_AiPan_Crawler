@@ -206,7 +206,7 @@ def main():
         sys.stdout.flush()
         time.sleep(wait)
 
-        download_exception_copy = download_exception
+        download_exception_copy = download_exception.copy()
         download_exception.clear()
         while download_exception_copy:
             download(*download_exception_copy.pop())
