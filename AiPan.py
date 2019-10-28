@@ -138,7 +138,10 @@ def recursive_fetch(soup, part_url):
     global url
     global headers
 
-    for i in soup.find_all('td', class_='link')[1:]:  # 获取文件或目录
+    for i in soup.find_all('td', class_='link'):  # 获取文件或目录
+        if i.text == 'Parent directory/':
+            continue
+
         if i.text[-1] != '/':
             path = part_url[len(url):]
             filename = i.text
