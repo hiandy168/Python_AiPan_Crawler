@@ -41,10 +41,13 @@ def download(file_url, path, filename):  # 下载函数
 
     display_max = 64
 
-    if len(path) > display_max:
-        display_path = '...' + path[-display_max:]
+    if path:
+        if len(path) > display_max:
+            display_path = '...' + path[-display_max:]
+        else:
+            display_path = path
     else:
-        display_path = path
+        display_path = '/'
 
     if len(filename) > display_max:
         display_filename = '...' + filename[-display_max:]
@@ -64,10 +67,11 @@ def download(file_url, path, filename):  # 下载函数
 
     start = time.time()  # 开始时间
 
-    if not os.path.exists(path):
-        os.makedirs(path)
-    if path[-1] != os.sep:
-        path += os.sep
+    if path:
+        if not os.path.exists(path):
+            os.makedirs(path)
+        if path[-1] != os.sep:
+            path += os.sep
     full_path = path + filename
 
     try:
@@ -137,9 +141,6 @@ def recursive_fetch(soup, part_url):
     for i in soup.find_all('td', class_='link')[1:]:  # 获取文件或目录
         if i.text[-1] != '/':
             path = part_url[len(url):]
-            if not path:
-                path = '/'
-
             filename = i.text
             file_url = part_url + filename
             download(file_url, path, filename)
