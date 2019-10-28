@@ -38,8 +38,20 @@ def download(file_url, path, filename):  # 下载函数
     global headers
     global download_exception
 
+    display_max = 64
+
+    if len(path) > display_max:
+        display_path = '...' + path[-display_max:]
+    else:
+        display_path = path
+
+    if len(filename) > display_max:
+        display_filename = '...' + filename[-display_max:]
+    else:
+        display_filename = filename
+
     print()
-    print(f'\r[Downloading] Path => {path}\tFile Name => {filename}')
+    print(f'\r[Downloading] Path => {display_path}\tFile Name => {display_filename}')
     sys.stdout.flush()
 
     delay = False
@@ -61,14 +73,13 @@ def download(file_url, path, filename):  # 下载函数
         response = requests.get(file_url, headers=headers, stream=True, timeout=30)
     except:
         download_exception.append((file_url, path, filename))
-        print(f'\r[Error] Download request for *{filename}* has failed.')
+        print(f'\r[Error] Download request for *{display_filename}* has failed.')
         return
 
     if response.status_code != 200:
         response.close()
         download_exception.append((file_url, path, filename))
-        print(
-            f'\r[Error] Download request for *{filename}* has failed.\tstatus_code => {response.status_code}')
+        print(f'\r[Error] Download request for *{display_filename}* has failed.\tstatus_code => {response.status_code}')
         return
 
     try:
@@ -76,15 +87,13 @@ def download(file_url, path, filename):  # 下载函数
     except:
         response.close()
         download_exception.append((file_url, path, filename))
-        print(
-            f'\r[Error] Download request for *{filename}* has failed.\tMissing or invalid content-length.')
+        print(f'\r[Error] Download request for *{display_filename}* has failed.\tMissing or invalid content-length.')
         return
 
     if content_size < 0:
         response.close()
         download_exception.append((file_url, path, filename))
-        print(
-            f'\r[Error] Download request for *{filename}* has failed.\tInvalid content-length range.')
+        print(f'\r[Error] Download request for *{display_filename}* has failed.\tInvalid content-length range.')
         return
 
     print('[File Size] %0.2f MB' % (content_size / 1024 ** 2))
@@ -112,7 +121,7 @@ def download(file_url, path, filename):  # 下载函数
         download_exception.append((file_url, path, filename))
         if os.path.exists(full_path):
             os.remove(full_path)
-        print(f'\r[Error] Download *{filename}* has failed.')
+        print(f'\r[Error] Download *{display_filename}* has failed.')
         return
     finally:
         response.close()
@@ -190,8 +199,6 @@ def main():
     while download_exception:
         print()
         print(f'\r[Info] Retrying {len(download_exception)} failed downloads...')
-        for file_url, _ in download_exception:
-            print(f'\r\t File URL => {file_url}')
 
         wait = round(random.uniform(10, 30), 2)
         print()
