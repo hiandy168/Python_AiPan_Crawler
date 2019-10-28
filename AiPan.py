@@ -137,6 +137,9 @@ def recursive_fetch(soup, part_url):
     for i in soup.find_all('td', class_='link')[1:]:  # 获取文件或目录
         if i.text[-1] != '/':
             path = part_url[len(url):]
+            if not path:
+                path = '/'
+
             filename = i.text
             file_url = part_url + filename
             download(file_url, path, filename)
@@ -202,7 +205,6 @@ def main():
         print(f'\r[Info] Retrying {len(download_exception)} failed downloads...')
 
         wait = round(random.uniform(10, 30), 2)
-        print()
         print(f'\r[Info] Waiting {wait} seconds...')
         sys.stdout.flush()
         time.sleep(wait)
@@ -210,7 +212,11 @@ def main():
         download_exception_copy = download_exception.copy()
         download_exception.clear()
         while download_exception_copy:
-            download(*download_exception_copy.pop())
+            file_url, path, filename = download_exception_copy.pop()
+            file_url = file_url.strip('\\')
+            path = path.strip('\\')
+            filename = filename.strip('\\')
+            download(file_url, path, filename)
 
 
 url = 'https://down.52pojie.cn/'  # 爱盘 URL
