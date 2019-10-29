@@ -10,6 +10,7 @@
 # 鸣谢
 - Maemo8086
 - MikoSec
+- 吾爱破解论坛，提供宝贵的逆向工程资源
 
 # 安装、使用方法
 本工具使用Python3，requests库，BeautifulSoup4库以及lxml库
